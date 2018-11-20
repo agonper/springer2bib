@@ -58,13 +58,20 @@ def row_to_article_properties(row):
 def row_to_common_properties(row):
     properties = "title={{{0}}},url={{{1}}},DOI={{{2}}},journal={{{3}}},author={{{4}}},year={{{5}}}"
     return properties.format(row['Item Title'], row['URL'], row['Item DOI'],
-                             row['Publication Title'], row['Authors'], row['Publication Year'])
+                             row['Publication Title'], short_authors(row), row['Publication Year'])
 
 
 def citation_name(row):
-    authors = row['Authors'].split(' ')
-    name = '_'.join(authors) + '_' + row['Publication Year']
+    authors = short_authors(row).split(' ')
+    doc_id = '_'.join(authors) if len(row['Authors']) != 0 \
+        else '_'.join(row['Item DOI'].split('/'))
+    name = doc_id + '_' + row['Publication Year']
     return name.lower()
+
+
+def short_authors(row):
+    authors = row['Authors'].split(' ')
+    return ' '.join(authors[:4])
 
 
 if __name__ == "__main__":
